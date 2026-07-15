@@ -1,0 +1,66 @@
+# Source-to-target mapping for ivv-recon.
+#
+# QUOTE YOUR TYPES. In YAML flow style, {type: NUMBER(38,0)} splits on the inner
+# comma and silently yields type="NUMBER(38". Always write type: "NUMBER(38,0)".
+# The loader rejects unbalanced parentheses so this cannot pass silently.
+#
+# Credentials do not belong here. This file is meant to be committed and
+# reviewed; connections are injected by the caller.
+
+source:
+  dialect: sqlserver        # sqlserver | azuresql | synapse | snowflake
+  database: CoreBank
+  schema: dbo
+  table: CUSTOMER
+
+target:
+  dialect: snowflake
+  database: ANALYTICS
+  schema: RAW
+  table: CUSTOMER
+
+# Business key. Must be unique and non-NULL on both sides -- everything
+# downstream depends on it. Composite keys: list several entries.
+keys:
+  - source: {name: CUSTOMER_ID, type: "INT", nullable: false}
+    target: {name: CUSTOMER_ID, type: "NUMBER(38,0)", nullable: false}
+
+# Columns compared for content.
+compare:
+  # Shorthand: same name, same type both sides.
+  - name: EMAIL
+    type: "VARCHAR(100)"
+
+  # Long form: renamed, retyped, or worth a documented note.
+  - source: {name: SURNAME, type: "CHAR(20)"}
+    target: {name: SURNAME, type: "VARCHAR(20)"}
+    note: CHAR(20) to VARCHAR(20); trailing padding dropped by design
+
+  - source: {name: BALANCE, type: "DECIMAL(18,2)"}
+    target: {name: BALANCE, type: "NUMBER(38,10)"}
+    note: widened; both sides canonicalized to scale 10 before hashing
+
+  - source: {name: IS_ACTIVE, type: "BIT"}
+    target: {name: IS_ACTIVE, type: "BOOLEAN"}
+    note: BIT to BOOLEAN
+
+  - source: {name: OPENED_AT, type: "DATETIME"}
+    target: {name: OPENED_AT, type: "TIMESTAMP_NTZ(9)"}
+    note: truncated to milliseconds; SQL Server DATETIME cannot hold more
+
+# Columns deliberately NOT validated. Every entry is a hole in the assurance
+# and needs a reason -- the runbook prints this list for the auditor.
+exclude:
+  - LOAD_TIMESTAMP      # populated by the load itself; will never match
+  - ETL_BATCH_ID        # target-only lineage column
+
+options:
+  # Optional predicates, e.g. to reconcile one partition at a time.
+  source_where: null
+  target_where: null
+
+  # Severity at or above which the run fails. critical | high | medium | low
+  fail_threshold: high
+
+  # Absolute tolerance for aggregate comparison. Keep at 0 for exact numerics.
+  aggregate_tolerance: 0.0
