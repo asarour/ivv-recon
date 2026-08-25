@@ -14,8 +14,9 @@ from __future__ import annotations
 
 import datetime as dt
 import hashlib
+from collections.abc import Sequence
 from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
-from typing import Any, Sequence
+from typing import Any
 
 from .dialects import (
     FIELD_SEPARATOR,

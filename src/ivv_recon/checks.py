@@ -9,7 +9,8 @@ Fetching lives in connectors.py; orchestration lives in engine.py.
 
 from __future__ import annotations
 
-from typing import Any, Iterable, Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
+from typing import Any
 
 from .findings import CheckResult, CheckStatus, Finding, Severity
 from .schema import ColumnMapping, MappingSpec
