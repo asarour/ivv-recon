@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .findings import CheckStatus, ReconReport, Severity
+from .findings import ReconReport, Severity
 
 _SEV_COLOR = {
     Severity.CRITICAL: "#c0392b",
