@@ -98,7 +98,7 @@ def canonical_row(values: Sequence[Any], columns: Sequence[Column]) -> str:
             f"row has {len(values)} values but mapping has {len(columns)} columns"
         )
     return FIELD_SEPARATOR.join(
-        canonical_value(v, c.logical_type) for v, c in zip(values, columns)
+        canonical_value(v, c.logical_type) for v, c in zip(values, columns, strict=True)
     )
 
 
@@ -110,4 +110,4 @@ def row_hash(values: Sequence[Any], columns: Sequence[Column]) -> str:
 
 def key_tuple(values: Sequence[Any], columns: Sequence[Column]) -> tuple[str, ...]:
     """Canonical key tuple, used to align rows across the two sides."""
-    return tuple(canonical_value(v, c.logical_type) for v, c in zip(values, columns))
+    return tuple(canonical_value(v, c.logical_type) for v, c in zip(values, columns, strict=True))

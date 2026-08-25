@@ -136,7 +136,7 @@ class SQLConnector:
         sql = f"SELECT {', '.join(exprs)} FROM {self._table(table)}{self._where(where)}"
         cur = self._execute(sql)
         row = cur.fetchone() or []
-        return {c.name: int(v or 0) for c, v in zip(columns, row)}
+        return {c.name: int(v or 0) for c, v in zip(columns, row, strict=True)}
 
     def aggregates(
         self, table: TableRef, columns: Sequence[Column], where: str | None = None
@@ -167,7 +167,7 @@ class SQLConnector:
         cur = self._execute(sql)
         row = cur.fetchone() or []
         out: dict[str, dict[str, Any]] = {}
-        for (col, stat), val in zip(layout, row):
+        for (col, stat), val in zip(layout, row, strict=True):
             out.setdefault(col, {})[stat] = val
         return out
 
@@ -237,7 +237,7 @@ class InMemoryConnector:
         idx = self._cols(columns)
         return {
             c.name: sum(1 for r in self.rows if r[i] is None)
-            for c, i in zip(columns, idx)
+            for c, i in zip(columns, idx, strict=True)
         }
 
     def aggregates(self, table, columns, where=None):
@@ -268,5 +268,5 @@ class InMemoryConnector:
             if k in want:
                 from .canonical import canonical_value
 
-                out[k] = [canonical_value(r[i], c.logical_type) for i, c in zip(ci, compare)]
+                out[k] = [canonical_value(r[i], c.logical_type) for i, c in zip(ci, compare, strict=True)]
         return out
