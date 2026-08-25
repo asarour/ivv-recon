@@ -19,7 +19,7 @@ Each rule below exists to kill one of those.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Iterable, Sequence
+from collections.abc import Sequence
 
 from .schema import Column, LogicalType
 
@@ -72,7 +72,6 @@ class Dialect(ABC):
         cols = list(columns)
         if not cols:
             raise ValueError("cannot build a row expression with no columns")
-        sep = repr(FIELD_SEPARATOR).replace('"', "'")
         sep_literal = "CHAR(31)" if self.uses_char_fn_for_sep else f"'{FIELD_SEPARATOR}'"
         parts = [self.canonical_expr(c) for c in cols]
         return f" || {sep_literal} || ".join(parts)

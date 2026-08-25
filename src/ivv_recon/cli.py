@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 from . import __version__
-from .config import load_options, load_spec
+from .config import load_spec
 from .engine import ReconEngine
 from .findings import Severity
 from .report import write_html, write_json
@@ -45,8 +45,6 @@ def _summary(report) -> None:
 
 
 def cmd_run(args: argparse.Namespace) -> int:
-    spec = load_spec(args.config)
-    opts = load_options(args.config)
 
     # Real connections are built by the operator and injected. This CLI path
     # deliberately does not read credentials -- wire your own connection factory
