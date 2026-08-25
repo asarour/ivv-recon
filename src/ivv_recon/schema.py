@@ -151,7 +151,7 @@ class Column:
     native_type: str | None = None
 
     @classmethod
-    def from_native(cls, name: str, native: str, nullable: bool = True) -> "Column":
+    def from_native(cls, name: str, native: str, nullable: bool = True) -> Column:
         return cls(
             name=name,
             logical_type=map_native_type(native),

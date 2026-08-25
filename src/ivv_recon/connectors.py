@@ -11,7 +11,8 @@ Both satisfy the same Protocol, so engine.py cannot tell them apart.
 
 from __future__ import annotations
 
-from typing import Any, Iterator, Protocol, Sequence
+from collections.abc import Iterator, Sequence
+from typing import Any, Protocol
 
 from .canonical import key_tuple, row_hash
 from .dialects import Dialect
@@ -121,8 +122,9 @@ class SQLConnector:
                 for row in batch:
                     k = tuple(str(v) for v in row[:nk])
                     # Values are already canonical text from SQL; hash the joined form.
-                    from .dialects import FIELD_SEPARATOR
                     import hashlib
+
+                    from .dialects import FIELD_SEPARATOR
 
                     payload = FIELD_SEPARATOR.join(str(v) for v in row[nk:])
                     yield k, hashlib.sha256(payload.encode("utf-8")).hexdigest()
@@ -242,6 +244,7 @@ class InMemoryConnector:
 
     def aggregates(self, table, columns, where=None):
         from decimal import Decimal
+        
         from .schema import LogicalType
 
         out: dict[str, dict[str, Any]] = {}
