@@ -6,14 +6,12 @@ each other.
 
 Supports **SQL Server**, **Azure SQL**, **Azure Synapse**, and **Snowflake**.
 
-![Tests](https://img.shields.io/badge/tests-74%20passing-brightgreen)
+[![CI](https://github.com/asarour/ivv-recon/actions/workflows/ci.yml/badge.svg)](https://github.com/asarour/ivv-recon/actions)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Platforms](https://img.shields.io/badge/SQL%20Server%20%7C%20Azure%20%7C%20Snowflake-supported-0078D4)
 
-<!-- After you push to GitHub, swap the Tests badge above for the live CI one:
-[![CI](https://github.com/asarour/ivv-recon/actions/workflows/ci.yml/badge.svg)](https://github.com/asarour/ivv-recon/actions)
--->
+
 
 ---
 
@@ -196,7 +194,7 @@ column is a hole in the assurance and the auditor deserves to see it.
 ## Development
 
 ```bash
-pytest                      # 70 tests, no database required
+pytest                      # 74 tests, no database required
 ruff check src tests
 ```
 
